@@ -1,0 +1,151 @@
+<div class="signup-form">
+    <form method="POST" class="register-form" (ngSubmit)="onSTSGenerate()" #f="ngForm">
+        <div class="form-row">
+            <div class="form-group">
+                <div class="form-radio">
+                    <div class="label-flex">
+                        <label for="payment">Generate AWS STS Credentials FOR: </label>
+                        <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_temp_use-resources.html" class="form-link" target="_blank">help</a>
+                    </div>
+                    <div class="form-radio-group">            
+                        <div class="form-radio-item" *ngFor="let account of accountTypes">
+                            <input type="radio" 
+                                              [value]="account._id" 
+                                              name="accounttype" 
+                                              ngModel
+                                              id="{{ account._id }}"
+                                              (click)="onChangeAccountType(account._id)"
+                                              #accounttype="ngModel"
+                                              [(ngModel)]="_accounttype"
+                            >
+                            <label for="{{ account._id }}">{{ account.name }} </label>
+                            <span class="check"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-input">
+                    <label for="duration">* Duration</label>
+                    <input 
+                      type="text" 
+                      ngModel
+                      name="duration" 
+                      required
+                      #duration="ngModel"
+                    />
+                    <p class="helpblock">
+                        (in seconds)
+                    </p>
+                    <span class="help-block" *ngIf="!duration.valid && duration.touched">required</span>
+                </div>
+                <div class="form-input">
+                    <label for="secret">* Your secret</label>
+                    <input 
+                      type="text" 
+                      ngModel
+                      name="secret" 
+                      required
+                      #secret="ngModel"
+                    />
+                    <p class="helpblock"> (from your serverless yml)</p>
+                    <span class="help-block" *ngIf="!secret.valid && secret.touched">required</span>
+                </div>
+
+                
+            </div>
+            <div class="form-group" *ngIf="isCrossAccount">
+                
+                <div class="form-input">
+                    <label for="roleARN">* Role ARN</label>
+                    <input 
+                      type="text" 
+                      ngModel
+                      name="roleARN" 
+                      #roleARN="ngModel" 
+                      required
+                    />
+                    <span class="help-block" *ngIf="!roleARN.valid && roleARN.touched && _accounttype === '1'">required</span>
+                </div>
+                <div class="form-input">
+                    <label for="roleSessionName">* Role session name</label>
+                    <input 
+                      type="text" 
+                      ngModel
+                      name="roleSessionName" 
+                      #roleSessionName="ngModel"
+                      required
+                    />
+                    <span class="help-block" *ngIf="!roleSessionName.valid && roleSessionName.touched && _accounttype === '1'">required</span>
+                </div>
+                <div class="form-input">
+                    <label for="externalId">* External Id</label>
+                    <input 
+                      type="text" 
+                      ngModel
+                      name="externalId" 
+                      #externalId="ngModel"
+                      required
+                    />
+                    <span class="help-block" *ngIf="!externalId.valid && externalId.touched && _accounttype === '1'">required</span>
+                </div>
+
+            </div>
+            
+        </div>
+        <div class="form-input" *ngIf="isLoading">
+            <img src="assets/images/ajax-loader.gif" width="40px" alt="">
+        </div>
+        <div class="form-submit">
+            <input 
+                  type="submit" 
+                  value="Generate" 
+                  class="submit" 
+                  id="submit" 
+                  name="submit" 
+                  [disabled]="!f.valid"
+            />
+            <input type="button" value="Reset" class="submit" id="reset" name="reset" (click)="onResetForm()" />
+        </div>
+
+        <div class="form-input">
+            <br />
+            <span class="help-block" *ngIf="!f.valid">Inputs with * are required.</span>        
+        </div>
+        
+        <div class="form-group" *ngIf="isError">
+            <br />
+            <hr />
+            <label style="color: maroon" *ngIf="isError">Error</label>
+            <p *ngIf="isError" style="color: #000;overflow-wrap: break-word;font-weight: normal">
+                {{ error }}
+
+            </p>
+        </div>
+        <div class="form-group" *ngIf="isProcessed">
+          <br />
+            <hr />
+            <label style="color: maroon">Access Key Id</label>
+            <p style="color: #000;overflow-wrap: break-word;font-weight: normal">
+                {{ token.token.accessKeyId }}
+
+                {{ token.token.AccessKeyId}}
+            </p>
+            <br />
+            <label style="color: maroon">Secret Access Key</label>
+            <p style="color: #000;overflow-wrap: break-word;font-weight: normal">
+                {{ token.token.secretAccessKey }}
+
+                {{ token.token.SecretAccessKey }}
+            </p>
+            <br />
+            <label style="color: maroon">Session Token</label>
+            <p style="color: #000;overflow-wrap: break-word;font-weight: normal">
+                {{ token.token.sessionToken }}
+
+                {{ token.token.SessionToken }}
+            </p>
+           
+        </div>
+    </form>
+    
+    
+</div>

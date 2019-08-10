@@ -1,0 +1,22 @@
+service: serverless # NOTE: update this with your service name
+
+provider:
+  name: aws
+  role: ${self:custom.lambdaRole}
+  runtime: nodejs8.10
+  tracing:
+    lambda: true
+    apiGateway: true
+  stage: ${self:custom.stackstage}
+  region: ${self:custom.region}
+  memorySize: ${self:custom.lambdaMemorysize}
+  
+functions:
+  - '${file(sts/sts.serverless.yml)}'
+
+custom:
+  stackstage: prod
+  region: eu-west-1
+  lambdaRole: #your role against you want to get the credentials for
+  unLockKey: #anysecret key e.g. 135247
+  lambdaMemorysize: 512

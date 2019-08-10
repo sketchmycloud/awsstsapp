@@ -1,0 +1,10 @@
+GetSTSCredentials:
+  handler: sts/STS.index
+  name: GetSTSCredentials
+  environment:
+    unLockKey: ${self:custom.unLockKey}
+  events:
+    - http:
+        path: /stscred
+        method: post
+        cors: true
